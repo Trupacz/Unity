@@ -3,25 +3,40 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerControler : MonoBehaviour {
-    
+    Animator state;
+    SpriteRenderer spriteface;
     private Rigidbody2D rb2d; 
     private float speed = 1.5f;
     private bool inAir;
     float maxSpeed = 20.0f;
+    bool isFacingRight;
+    
+
 
     private void Start()
-    {   
+    {
+        
+        isFacingRight = true;
+        spriteface = GetComponent<SpriteRenderer>();
         rb2d = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.RightArrow)) {
-            transform.localScale = new Vector3(1.0f, 1.0f, 1);
+            if (!isFacingRight) {
+                isFacingRight = true;
+                spriteface.flipX = false ;
+                    }
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            transform.localScale = new Vector3(-1.0f, 1.0f, 1);
+            if (isFacingRight)
+            {
+                isFacingRight = false;
+                spriteface.flipX = true;
+            }
+
         }
         if (Input.GetKeyDown(KeyCode.Space) && !inAir)
         {

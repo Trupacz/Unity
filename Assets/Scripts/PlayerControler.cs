@@ -10,37 +10,49 @@ public class PlayerControler : MonoBehaviour {
     private bool inAir;
     float maxSpeed = 20.0f;
     bool isFacingRight;
-    
+    Animator animator;
+
 
 
     private void Start()
     {
-        
+        animator = GetComponent<Animator>();
         isFacingRight = true;
         spriteface = GetComponent<SpriteRenderer>();
         rb2d = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
+        
     {
-        if (Input.GetKeyDown(KeyCode.RightArrow)) {
-            if (!isFacingRight) {
-                isFacingRight = true;
-                spriteface.flipX = false ;
-                    }
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            if (isFacingRight)
+        
+            if (Input.GetKeyDown(KeyCode.RightArrow))
             {
-                isFacingRight = false;
-                spriteface.flipX = true;
+
+                if (!isFacingRight)
+                {
+                    isFacingRight = true;
+                    spriteface.flipX = false;
+                }
             }
 
-        }
+
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+
+                if (isFacingRight)
+                {
+                    isFacingRight = false;
+                    spriteface.flipX = true;
+                }
+
+            }
+        
+
         if (Input.GetKeyDown(KeyCode.Space) && !inAir)
         {
             inAir = true;
+            animator.Play("Jumping");
             StartCoroutine(Deley());
         }
     }
@@ -53,7 +65,7 @@ public class PlayerControler : MonoBehaviour {
         else {
         }
             float move = Input.GetAxis("Horizontal")*speed;
-
+        animator.SetFloat("speed", Mathf.Abs(move) + 0.09f);
         Vector2 mm = new Vector2(move, 0);
         rb2d.AddForce(mm, ForceMode2D.Impulse);
 
@@ -68,6 +80,7 @@ public class PlayerControler : MonoBehaviour {
 
         }
         inAir = false;
+        
 
         if (collision.transform.tag == "MovingPlatform")
         {

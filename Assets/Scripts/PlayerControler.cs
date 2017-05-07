@@ -11,6 +11,7 @@ public class PlayerControler : MonoBehaviour {
     float maxSpeed = 20.0f;
     bool isFacingRight;
     Animator animator;
+    float move;
 
 
 
@@ -51,23 +52,31 @@ public class PlayerControler : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.Space) && !inAir)
         {
-            inAir = true;
-            animator.Play("Jumping");
+           
+            
             StartCoroutine(Deley());
         }
     }
     void FixedUpdate () {
-
+        
         if (rb2d.velocity.magnitude > maxSpeed)
         {
             rb2d.velocity = rb2d.velocity.normalized * maxSpeed;
         }
         else {
+            move = Input.GetAxis("Horizontal") * speed;
         }
-            float move = Input.GetAxis("Horizontal")*speed;
+            
+        
+        if (rb2d.velocity.y == 0) inAir = false;
+        else inAir = true;
         animator.SetFloat("speed", Mathf.Abs(move) + 0.09f);
+        animator.SetFloat("FSpeed", rb2d.velocity.y + 0.09f);
+        animator.SetBool("inAir", inAir);
+
         Vector2 mm = new Vector2(move, 0);
         rb2d.AddForce(mm, ForceMode2D.Impulse);
+        
 
             }
 
@@ -79,8 +88,9 @@ public class PlayerControler : MonoBehaviour {
 
 
         }
-        inAir = false;
         
+
+
 
         if (collision.transform.tag == "MovingPlatform")
         {

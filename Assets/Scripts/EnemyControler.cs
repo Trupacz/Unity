@@ -6,6 +6,7 @@ public class EnemyControler : MonoBehaviour
 {
     public float firstjump;
     Rigidbody2D rb2d;
+   
 
     void Start()
     {
@@ -20,7 +21,7 @@ public class EnemyControler : MonoBehaviour
 
     }
     private void Jumper()
-    {
+    {   
         rb2d.AddForce(new Vector3(0, 1000, 0), ForceMode2D.Force);
     }
 

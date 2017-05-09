@@ -18,6 +18,7 @@ public class DeathZoneControler : MonoBehaviour {
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        GameManager.Restart();
+        if(collision.tag == "Player") GameManager.Restart();
+        if(collision.tag == "bullet") Destroy(collision.gameObject);
     }
 }

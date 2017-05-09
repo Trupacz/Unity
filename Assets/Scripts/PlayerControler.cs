@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,11 +13,19 @@ public class PlayerControler : MonoBehaviour {
     bool isFacingRight;
     Animator animator;
     float move;
+    public Rigidbody2D bullet;
+    public GameObject menu;
+    bool isMenuActive;
+    public AudioClip throwsound;
+
 
 
 
     private void Start()
     {
+        isMenuActive = false;
+        menu = GameObject.FindGameObjectWithTag("Menu");
+        menu.SetActive(false);
         animator = GetComponent<Animator>();
         isFacingRight = true;
         spriteface = GetComponent<SpriteRenderer>();
@@ -48,7 +57,10 @@ public class PlayerControler : MonoBehaviour {
                 }
 
             }
-        
+
+        if (Input.GetKeyDown(KeyCode.RightControl)) ThrowKunai();
+        if (Input.GetKeyDown(KeyCode.Escape)) MenuActivation();
+
 
         if (Input.GetKeyDown(KeyCode.Space) && !inAir)
         {
@@ -57,6 +69,9 @@ public class PlayerControler : MonoBehaviour {
             StartCoroutine(Deley());
         }
     }
+
+   
+
     void FixedUpdate () {
         
         if (rb2d.velocity.magnitude > maxSpeed)
@@ -80,6 +95,44 @@ public class PlayerControler : MonoBehaviour {
 
             }
 
+    private void ThrowKunai() {
+        //print("Pew");
+        animator.Play("Throwing");
+        AudioSource player = GetComponent<AudioSource>();
+        player.clip = throwsound;
+        player.Play();
+         
+        
+        if (isFacingRight)
+        {
+            Rigidbody2D bulletInstance = Instantiate(bullet, transform.position + new Vector3(1, 0, 0), Quaternion.Euler(new Vector3(0, 0, -90))) as Rigidbody2D;
+            Physics2D.IgnoreCollision(bullet.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+            bulletInstance.AddForce(new Vector2(50, 0), ForceMode2D.Impulse);
+        }
+        else
+        {
+            Rigidbody2D bulletInstance = Instantiate(bullet, transform.position + new Vector3(-1, 0, 0), Quaternion.Euler(new Vector3(0, 0, 90))) as Rigidbody2D;
+            Physics2D.IgnoreCollision(bullet.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+            bulletInstance.AddForce(new Vector2(-50, 0), ForceMode2D.Impulse);
+        }
+        
+    }
+
+    private void MenuActivation()
+    {
+        print("clik");
+        if (isMenuActive)
+        {
+            
+            menu.SetActive(false);
+            
+        }
+        else
+        {
+            menu.SetActive(true);
+        }
+        isMenuActive = !isMenuActive;
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.transform.tag == "Enemy")

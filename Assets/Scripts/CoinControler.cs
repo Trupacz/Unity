@@ -17,11 +17,13 @@ public class CoinControler : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.tag == "Player") { 
         AudioSource player = GameObject.Find("Player").GetComponent<AudioSource>();
         player.clip = sound;
         player.Play();
 
         GameManager.AddPoints();
         Destroy(gameObject);
+    }
     }
 }
